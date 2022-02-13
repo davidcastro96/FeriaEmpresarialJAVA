@@ -76,7 +76,7 @@ public class FeriaEmpresarial {
     /**
      * Número de puestos en la zona norte
      */
-    public static final int NUM_PUESTOS_NORTE = 5;
+    public static final int NUM_PUESTOS_NORTE = 4;
 
     /**
      * Número de puestos en la zona sur
@@ -108,12 +108,12 @@ public class FeriaEmpresarial {
     // -----------------------------------------------------------------
 
     /**
-     * Colección de empresas de la feria
+     * Colección de empresas de la feria - Clase Empresa muchas *
      */
     private ArrayList<Empresa> empresas;
 
     /**
-     * Puestos de la feria
+     * Puestos de la feria - Clase puestos 22
      */
     private Puesto[] puestos;
 
@@ -128,7 +128,10 @@ public class FeriaEmpresarial {
      */
     public FeriaEmpresarial() {
         empresas = new ArrayList<>();
+        // Creamos el objeto puestos de tipo Puesto | inicializaria en
         puestos = new Puesto[NUM_PUESTOS_NORTE + NUM_PUESTOS_SUR + NUM_PUESTOS_ORIENTE + NUM_PUESTOS_OCCIDENTE + NUM_PUESTOS_CENTRO];
+        //System.out.println("FeriaEmpresarial.java 133 | creando " + puestos.length + " puestos");
+        // Metodo local de la clase FE
         crearPuestos();
     }
 
@@ -354,6 +357,7 @@ public class FeriaEmpresarial {
      * <b>post: </b>Se retornó el porcentaje de puestos ocupados<br>
      * @return Porcentaje de ocupación de puestos<br>
      */
+
     public double porcentajeOcupacion() {
         int numPuestosOcupados = 0;
         int totalPuestos = puestos.length;
@@ -402,12 +406,16 @@ public class FeriaEmpresarial {
      * <b>post: </b> Los puestos han sido inicializados con sus valores de acuerdo a su zona de ubicación<br>
      * Los puestos se llenan en el siguiente orden por zonas: Norte, Oriente, Sur, Occidente, Centro. Cada zona se llena por número de puesto incrementálmente
      */
+    //Método privado en FE para crear puestos
     private void crearPuestos() {
         int numPuesto = 1;
+        // zona = Zona norte etc.
         String zona = Puesto.ZONA_NORTE;
         for (int i = 0; i < NUM_PUESTOS_NORTE; i++) {
+            // Puesto(Numero puesto, zona del puesto, num min de personas, num max de personas)
             puestos[i] = new Puesto(numPuesto, zona, MIN_PERSONAS_NORTE, MAX_PERSONAS_NORTE);
             numPuesto++;
+            //System.out.println("FeriaEmpresarial.java | puesto " + (numPuesto-1) + " creado en " + zona);
         }
 
         numPuesto = 1;
@@ -415,28 +423,56 @@ public class FeriaEmpresarial {
         for (int i = 0; i < NUM_PUESTOS_ORIENTE; i++) {
             puestos[i + NUM_PUESTOS_NORTE] = new Puesto(numPuesto, zona, MIN_PERSONAS_ORIENTE, MAX_PERSONAS_ORIENTE);
             numPuesto++;
-        }
+            //System.out.println("FeriaEmpresarial.java | puesto " + (numPuesto-1) + " creado en " + zona );
 
+        }
         numPuesto = 1;
         zona = Puesto.ZONA_SUR;
         for (int i = 0; i < NUM_PUESTOS_SUR; i++) {
             puestos[i + NUM_PUESTOS_NORTE + NUM_PUESTOS_ORIENTE] = new Puesto(numPuesto, zona, MIN_PERSONAS_SUR, MAX_PERSONAS_SUR);
             numPuesto++;
-        }
+            //System.out.println("FeriaEmpresarial.java | puesto " + (numPuesto-1) + " creado en " + zona );
 
+        }
         numPuesto = 1;
         zona = Puesto.ZONA_OCCIDENTE;
         for (int i = 0; i < NUM_PUESTOS_OCCIDENTE; i++) {
             puestos[i + NUM_PUESTOS_NORTE + NUM_PUESTOS_ORIENTE + NUM_PUESTOS_SUR] = new Puesto(numPuesto, zona, MIN_PERSONAS_OCCIDENTE, MAX_PERSONAS_OCCIDENTE);
             numPuesto++;
-        }
+            //System.out.println("FeriaEmpresarial.java | puesto " + (numPuesto-1) + " creado en " + zona );
 
+        }
         numPuesto = 1;
         zona = Puesto.ZONA_CENTRO;
         for (int i = 0; i < NUM_PUESTOS_CENTRO; i++) {
             puestos[i + NUM_PUESTOS_NORTE + NUM_PUESTOS_ORIENTE + NUM_PUESTOS_SUR + NUM_PUESTOS_OCCIDENTE] = new Puesto(numPuesto, zona, MIN_PERSONAS_CENTRO, MAX_PERSONAS_CENTRO);
             numPuesto++;
+            //System.out.println("FeriaEmpresarial.java | puesto " + (numPuesto-1) + " creado en " + zona);
         }
+    }
+
+    /**
+     * Cantidad de expositores que hay en una zona
+     */
+    private int identificarExpositoresZona(int numPuesto, String zona){
+        // Primero buscanos el puesto
+        Puesto lugar = null;
+        for(Puesto puesto:puestos){
+            if (puesto.darNumero() == numPuesto && puesto.darZona().equals(zona));{
+                lugar = puesto;
+            }
+        }
+        if (lugar == null || !lugar.estaOcupado()){
+            return 0;
+        }
+
+        String nombreEmpresaEncontrada = lugar.darNombreEmpresa();
+        for (Empresa empresa:empresas){
+            if (empresa.darNombre().equals(nombreEmpresaEncontrada)){
+                return empresa.darNumeroPersonasAsistentes();
+            }
+        }
+        return 0;
     }
 
     // -----------------------------------------------------------------
@@ -447,122 +483,48 @@ public class FeriaEmpresarial {
      * Método para la extensión 1
      * @return respuesta1
      */
-/*    public String metodo1() {
-        //int zonaMayorNumExpo = puestos.length;
-
-        //return "La zona con mayor número de expositores es: " + zonaMayorNumExpo;
-        return null;
-    }*/
-    public void metodo1(String nNombreEmpresa, int nNumeroPersonasExpositoras, String zonaPuesto, int numeroPuesto) throws Exception {
-        boolean encontrado = false;
-
-        for (int i = 0; i < empresas.size(); i++) {
-            Empresa empresa = empresas.get(i);
-            if (empresa.darNombre().equals(nNombreEmpresa)) {
-                encontrado = true;
+    public String metodo1() {
+        String datos = "";
+        for (Puesto puesto:puestos) {
+            if (puesto.estaOcupado()) {
+                for (Empresa empresa:empresas){
+                    if (puesto.darNombreEmpresa().equals(empresa.darNombre())){
+                        datos += puesto.darZona() + ", empresa " + puesto.darNombreEmpresa()+" con "
+                                +empresa.darNumeroPersonasAsistentes()+" expositores\n";
+                    }
+                }
             }
         }
-
-        if (encontrado) {
-            throw new Exception("La empresa ya existe");
-        }
-
-        if (zonaPuesto.equals(Puesto.ZONA_NORTE)) {
-            if (nNumeroPersonasExpositoras < MIN_PERSONAS_NORTE || nNumeroPersonasExpositoras > MAX_PERSONAS_NORTE) {
-                throw new Exception("Número de personas no permitidas para la zona");
-            }
-
-            if (numeroPuesto > NUM_PUESTOS_NORTE) {
-                throw new Exception("El puesto no existe");
-            }
-
-            int posicion = numeroPuesto - 1;
-            if (puestos[posicion].estaOcupado()) {
-                throw new Exception("El puesto ya está ocupado");
-            }
-
-            puestos[posicion].ocuparPuesto(nNombreEmpresa);
-        }
-        else if (zonaPuesto.equals(Puesto.ZONA_ORIENTE)) {
-            if (nNumeroPersonasExpositoras < MIN_PERSONAS_ORIENTE || nNumeroPersonasExpositoras > MAX_PERSONAS_ORIENTE) {
-                throw new Exception("Número de personas no permitidas para la zona");
-            }
-
-            if (numeroPuesto > NUM_PUESTOS_ORIENTE) {
-                throw new Exception("El puesto no existe");
-            }
-
-            int posicion = numeroPuesto - 1 + NUM_PUESTOS_NORTE;
-            if (puestos[posicion].estaOcupado()) {
-                throw new Exception("El puesto ya esta ocupado");
-            }
-
-            puestos[posicion].ocuparPuesto(nNombreEmpresa);
-        }
-        else if (zonaPuesto.equals(Puesto.ZONA_SUR)) {
-            if (nNumeroPersonasExpositoras < MIN_PERSONAS_SUR || nNumeroPersonasExpositoras > MAX_PERSONAS_SUR) {
-                throw new Exception("Número de personas no permitidas para la zona");
-            }
-
-            if (numeroPuesto > NUM_PUESTOS_SUR) {
-                throw new Exception("El puesto no existe");
-            }
-
-            int posicion = numeroPuesto - 1 + NUM_PUESTOS_NORTE + NUM_PUESTOS_ORIENTE;
-            if (puestos[posicion].estaOcupado()) {
-                throw new Exception("El puesto ya esta ocupado");
-            }
-
-            puestos[posicion].ocuparPuesto(nNombreEmpresa);
-        }
-        else if (zonaPuesto.equals(Puesto.ZONA_OCCIDENTE)) {
-            if (nNumeroPersonasExpositoras < MIN_PERSONAS_OCCIDENTE || nNumeroPersonasExpositoras > MAX_PERSONAS_OCCIDENTE) {
-                throw new Exception("Número de personas no permitidas para la zona");
-            }
-
-            if (numeroPuesto > NUM_PUESTOS_OCCIDENTE) {
-                throw new Exception("El puesto no existe");
-            }
-
-            int posicion = numeroPuesto - 1 + NUM_PUESTOS_NORTE + NUM_PUESTOS_ORIENTE + NUM_PUESTOS_SUR;
-            if (puestos[posicion].estaOcupado()) {
-                throw new Exception("El puesto ya esta ocupado");
-            }
-
-            puestos[posicion].ocuparPuesto(nNombreEmpresa);
-        }
-        else if (zonaPuesto.equals(Puesto.ZONA_CENTRO)) {
-            if (nNumeroPersonasExpositoras < MIN_PERSONAS_CENTRO || nNumeroPersonasExpositoras > MAX_PERSONAS_CENTRO) {
-                throw new Exception("Número de personas no permitidas para la zona");
-            }
-
-            if (numeroPuesto > NUM_PUESTOS_CENTRO) {
-                throw new Exception("El puesto no existe");
-            }
-
-            int posicion = numeroPuesto - 1 + NUM_PUESTOS_NORTE + NUM_PUESTOS_ORIENTE + NUM_PUESTOS_SUR + NUM_PUESTOS_OCCIDENTE;
-            if (puestos[posicion].estaOcupado()) {
-                throw new Exception("El puesto ya esta ocupado");
-            }
-
-            puestos[posicion].ocuparPuesto(nNombreEmpresa);
-
-        }
-        else {
-            throw new Exception("Zona no permitida");
-        }
-
-        empresas.add(new Empresa(nNombreEmpresa, Empresa.EXPOSITORA, nNumeroPersonasExpositoras));
+        return datos;
     }
-
-
 
     /**
      * Método para la extensión2
      * @return respuesta2
      */
     public String metodo2() {
-        return "Respuesta 2";
+        int numeroActualExpositores = 0;
+        double porcentajeTotal = 0;
+        for (Puesto puesto:puestos) {
+            if (puesto.estaOcupado()) {
+                for (Empresa empresa:empresas){
+                    if (puesto.darNombreEmpresa().equals(empresa.darNombre())){
+                        numeroActualExpositores += empresa.darNumeroPersonasAsistentes();
+                    }
+                }
+            }
+        }
+        int totalPuestos = (MAX_PERSONAS_CENTRO + MAX_PERSONAS_NORTE + MAX_PERSONAS_ORIENTE + MAX_PERSONAS_OCCIDENTE + MAX_PERSONAS_SUR);
+        porcentajeTotal = numeroActualExpositores * totalPuestos;
+        porcentajeTotal = porcentajeTotal / 100;
+        //System.out.println(numeroActualExpositores +" "+ totalPuestos + " " + porcentajeTotal);
+        String resp = String.valueOf(porcentajeTotal);
+        if (porcentajeTotal > 60){
+            return resp + "% El punto de equilibrio se ha cumplido por encima del 60%";
+        }else{
+
+            return resp + "% El punto de equilibrio no se ha cumplido, está por debajo del 60%";
+        }
     }
 
 }
