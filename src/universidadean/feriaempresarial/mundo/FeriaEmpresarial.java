@@ -489,40 +489,44 @@ public class FeriaEmpresarial {
         int zonaocci = 0;
         int zonaori = 0;
         int zonacent = 0;
-        String datos = "";
-        for (Puesto puesto:puestos) {
+        Boolean sw = false;
+        for (Puesto puesto : puestos) {
             if (puesto.estaOcupado()) {
-                for (Empresa empresa:empresas){
+                for (Empresa empresa : empresas) {
                     if (puesto.darNombreEmpresa().equals(empresa.darNombre())) {
                         //datos += puesto.darZona() + ", empresa " + puesto.darNombreEmpresa() + " con "
                         //        + empresa.darNumeroPersonasAsistentes() + " expositores\n";
-                        if (puesto.darNombreEmpresa().equals(empresa.darNombre())){
-                            if (puesto.darZona()==Puesto.ZONA_NORTE){
+                        if (puesto.darNombreEmpresa().equals(empresa.darNombre())) {
+                            if (puesto.darZona() == Puesto.ZONA_NORTE) {
                                 zonanorte += empresa.darNumeroPersonasAsistentes();
+                                sw = true;
                             }
-                            if (puesto.darZona()==Puesto.ZONA_SUR){
+                            if (puesto.darZona() == Puesto.ZONA_SUR) {
                                 zonasur += empresa.darNumeroPersonasAsistentes();
+                                sw = true;
                             }
-                            if (puesto.darZona()==Puesto.ZONA_ORIENTE){
+                            if (puesto.darZona() == Puesto.ZONA_ORIENTE) {
                                 zonaori += empresa.darNumeroPersonasAsistentes();
+                                sw = true;
                             }
-                            if (puesto.darZona()==Puesto.ZONA_OCCIDENTE){
+                            if (puesto.darZona() == Puesto.ZONA_OCCIDENTE) {
                                 zonaocci += empresa.darNumeroPersonasAsistentes();
+                                sw = true;
                             }
-                            if (puesto.darZona()==Puesto.ZONA_CENTRO){
+                            if (puesto.darZona() == Puesto.ZONA_CENTRO) {
                                 zonacent += empresa.darNumeroPersonasAsistentes();
+                                sw = true;
                             }
                         }
                     }
                 }
             }
         }
-        if (){
-            //return "No ha ingresado empresas expositoras";
-        int mayor0 = Math.max(zonasur,zonanorte);
-        int mayor1 = Math.m
-        //return datos;
-        return String.valueOf("| "+zonasur +" | "+ zonanorte +" | "+ zonaori +" | "+ zonaocci +" | "+ zonacent);
+        if (!sw) {
+            return "No ha ingresado empresas expositoras";
+        }else{
+            return String.valueOf("Total de expositores por zonas\n"+"Zona sur : "+zonasur +"\nZona norte : "+ zonanorte +"\nZona oriente : "+ zonaori +"\nZona occidente : "+ zonaocci +"\nZona centro : "+ zonacent);
+        }
     }
 
     /**
