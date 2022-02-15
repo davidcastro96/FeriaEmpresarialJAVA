@@ -484,18 +484,45 @@ public class FeriaEmpresarial {
      * @return respuesta1
      */
     public String metodo1() {
+        int zonanorte = 0;
+        int zonasur = 0;
+        int zonaocci = 0;
+        int zonaori = 0;
+        int zonacent = 0;
         String datos = "";
         for (Puesto puesto:puestos) {
             if (puesto.estaOcupado()) {
                 for (Empresa empresa:empresas){
-                    if (puesto.darNombreEmpresa().equals(empresa.darNombre())){
-                        datos += puesto.darZona() + ", empresa " + puesto.darNombreEmpresa()+" con "
-                                +empresa.darNumeroPersonasAsistentes()+" expositores\n";
+                    if (puesto.darNombreEmpresa().equals(empresa.darNombre())) {
+                        //datos += puesto.darZona() + ", empresa " + puesto.darNombreEmpresa() + " con "
+                        //        + empresa.darNumeroPersonasAsistentes() + " expositores\n";
+                        if (puesto.darNombreEmpresa().equals(empresa.darNombre())){
+                            if (puesto.darZona()==Puesto.ZONA_NORTE){
+                                zonanorte += empresa.darNumeroPersonasAsistentes();
+                            }
+                            if (puesto.darZona()==Puesto.ZONA_SUR){
+                                zonasur += empresa.darNumeroPersonasAsistentes();
+                            }
+                            if (puesto.darZona()==Puesto.ZONA_ORIENTE){
+                                zonaori += empresa.darNumeroPersonasAsistentes();
+                            }
+                            if (puesto.darZona()==Puesto.ZONA_OCCIDENTE){
+                                zonaocci += empresa.darNumeroPersonasAsistentes();
+                            }
+                            if (puesto.darZona()==Puesto.ZONA_CENTRO){
+                                zonacent += empresa.darNumeroPersonasAsistentes();
+                            }
+                        }
                     }
                 }
             }
         }
-        return datos;
+        if (){
+            //return "No ha ingresado empresas expositoras";
+        int mayor0 = Math.max(zonasur,zonanorte);
+        int mayor1 = Math.m
+        //return datos;
+        return String.valueOf("| "+zonasur +" | "+ zonanorte +" | "+ zonaori +" | "+ zonaocci +" | "+ zonacent);
     }
 
     /**
@@ -522,7 +549,6 @@ public class FeriaEmpresarial {
         if (porcentajeTotal > 60){
             return resp + "% El punto de equilibrio se ha cumplido por encima del 60%";
         }else{
-
             return resp + "% El punto de equilibrio no se ha cumplido, está por debajo del 60%";
         }
     }
